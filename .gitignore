@@ -1,0 +1,6 @@
+target/
+.metals/**
+.bloop/**
+*.class
+*.semanticdb
+metals.sbt
