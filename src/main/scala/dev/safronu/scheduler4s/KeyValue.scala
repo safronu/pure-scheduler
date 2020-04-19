@@ -7,6 +7,6 @@ trait KeyValue[F[_], A, B] {
   def update(id: A, value: B): F[Unit]
 }
 
-trait KeyValueS[G[_], A, B]{
-  def all: G[(A, B)] 
+trait KeyValueS[F[_], A, B]{
+  def all: F[(A, B)] 
 }
