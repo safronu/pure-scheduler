@@ -5,19 +5,23 @@ val V = new {
   val refined       = "0.9.13"
   val tofu          = "0.7.4"
   val kindProjector = "0.11.0"
+  val catsEffects   = "2.1.3"
+  val contextApplied = "0.1.3"
 }
 
 val Deps = new {
-  val scalaTest = List("org.scalatest" %% "scalatest" % "3.1.1")
-  val newtype   = List("io.estatico" %% "newtype" % V.newtype)
-  val cats      = List("org.typelevel" %% "cats-core" % V.cats)
-  val cron4s    = List("com.github.alonsodomin.cron4s" %% "cron4s-core" % V.cron4s)
+  val scalaTest   = List("org.scalatest" %% "scalatest" % "3.1.1")
+  val newtype     = List("io.estatico" %% "newtype" % V.newtype)
+  val cats        = List("org.typelevel" %% "cats-core" % V.cats)
+  val catsEffects = List("org.typelevel" %% "cats-effect" % V.catsEffects)
+  val cron4s      = List("com.github.alonsodomin.cron4s" %% "cron4s-core" % V.cron4s)
   val refined = List(
     "eu.timepit" %% "refined" % V.refined,
     "eu.timepit" %% "refined-cats" % V.refined, // optional
   )
   val tofu          = List("ru.tinkoff" %% "tofu" % V.tofu)
   val kindProjector = "org.typelevel" %% "kind-projector" % V.kindProjector cross CrossVersion.full
+  val contextApplied = "org.augustjune" %% "context-applied" % V.contextApplied
 }
 
 lazy val scheduler4s = (project in file("."))
@@ -33,6 +37,8 @@ lazy val scheduler4s = (project in file("."))
     ++ Deps.cron4s
     ++ Deps.cats
     ++ Deps.tofu
-    ++ Deps.refined,
-    compilerPlugin(Deps.kindProjector)
+    ++ Deps.refined
+    ++ Deps.catsEffects,
+    addCompilerPlugin(Deps.kindProjector),
+    addCompilerPlugin(Deps.contextApplied)
   )

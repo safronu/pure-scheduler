@@ -6,3 +6,7 @@ trait KeyValue[F[_], A, B] {
   def delete(id: A): F[Option[B]]
   def update(id: A, value: B): F[Unit]
 }
+
+trait KeyValueS[G[_], A, B]{
+  def all: G[(A, B)] 
+}

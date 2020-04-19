@@ -1,4 +1,4 @@
-package dev.safronu
+package dev.safronu.scheduler4s
 
 import io.estatico.newtype.macros._
 import eu.timepit.refined._
