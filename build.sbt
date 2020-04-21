@@ -7,6 +7,7 @@ val V = new {
   val kindProjector  = "0.11.0"
   val catsEffects    = "2.1.3"
   val contextApplied = "0.1.3"
+  val simulacrum     = "1.0.0"
 }
 
 val Deps = new {
@@ -20,6 +21,7 @@ val Deps = new {
     "eu.timepit" %% "refined-cats" % V.refined, // optional
   )
   val tofu           = List("ru.tinkoff" %% "tofu" % V.tofu)
+  val simulacrum     = List("org.typelevel" %% "simulacrum" % V.simulacrum)
   val kindProjector  = "org.typelevel" %% "kind-projector" % V.kindProjector cross CrossVersion.full
   val contextApplied = "org.augustjune" %% "context-applied" % V.contextApplied
 }
@@ -38,6 +40,7 @@ lazy val scheduler4s = (project in file("."))
     ++ Deps.cats
     ++ Deps.tofu
     ++ Deps.refined
+    ++ Deps.simulacrum
     ++ Deps.catsEffects,
     addCompilerPlugin(Deps.kindProjector),
     addCompilerPlugin(Deps.contextApplied)
