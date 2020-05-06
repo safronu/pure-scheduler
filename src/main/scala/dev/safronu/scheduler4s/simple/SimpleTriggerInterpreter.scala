@@ -8,4 +8,5 @@ import cats.syntax._
 
 final class SimpleTriggerInterpreter[F[_]: Applicative] extends TriggerInterpreter[F, SimpleTrigger] {
   override def next(triggerRepr: SimpleTrigger): F[LocalDateTime] = triggerRepr.date.pure[F]
+  override def isLast(triggerRepr: SimpleTrigger): F[Boolean] = true.pure[F]
 }

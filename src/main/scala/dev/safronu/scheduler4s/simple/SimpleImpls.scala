@@ -41,13 +41,5 @@ import scala.jdk.CollectionConverters
 
 case class SimpleTrigger(date: LocalDateTime)
 
-final class SimpleJobsExtractor[F[_]: Monad: KeyValue[*[_], JobId, String]: KeyValue[*[_], TriggerId, JobId]: Raise[*[_], Exception]: Console: Daemonic[*[_], Throwable]] {
-  def jobs(id: TriggerId): F[F[Unit]] =
-    for {
-      jobId    <- F.get[F, TriggerId, JobId](id).orThrow(new Exception(s"There is no such trigger: $id"))
-      jobInput <- F.get[F, JobId, String](jobId).orThrow(new Exception(s"There is no such job: $id"))
-    } yield Console[F].putStrLn(s"hello, $jobInput")
-}
-
 
 
