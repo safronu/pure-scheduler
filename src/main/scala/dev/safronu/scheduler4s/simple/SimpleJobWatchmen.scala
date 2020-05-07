@@ -34,25 +34,71 @@ import cats.syntax._
 
 import tofu.logging._
 import tofu.syntax.context._
+import tofu.syntax.foption._
+import tofu.syntax.lift._
 import tofu._
 import dev.safronu.scheduler4s.TriggersWatchmen
 import dev.safronu.scheduler4s.aliases
-import dev.safronu.scheduler4s.RunWith
 import dev.safronu.scheduler4s.syntax._
 import dev.safronu.scheduler4s.TriggerInterpreter
+import io.circe.Decoder
+import io.circe.syntax._
+import io.circe.parser._
+import java.time.LocalDateTime
+import java.time.ZoneOffset
+import cats.effect.Timer
+import tofu.lift.Unlift
+import tofu.lift.Lift
 
 case class JobRecord(id: JobId, input: Json, trigger: Json)
 
+// trait Job[T, A{
+//   def job: ReaderT[T,] 
+//   def decoder:
+// }
+
+object Date{
+  def diff(start: LocalDateTime, end: LocalDateTime): Long = {
+    end.toInstant(ZoneOffset.UTC).toEpochMilli - start.toInstant(ZoneOffset.UTC).toEpochMilli()
+  }
+}
+
 final class SimpleTriggersWatchmen[
-    F[_]: Monad: Logging,
-    G[_]: RunWith[*[_], Json, Unit], 
+    F[_]: Monad: Raise[*[_], Exception]: Start: Logging: Timer,
+    G[_]: Traverse, 
     JobInput,
     TriggerType
   ](jobInputStorage   : aliases.KeyValue[F, G, JobId, JobRecord],
     triggerInterpreter: TriggerInterpreter[F, TriggerType]
-  ) extends TriggersWatchmen[F, G]{
+  )(implicit val triggerDecoder: Decoder[TriggerType], lift: Lift[G, F]) extends TriggersWatchmen[F, G]{
   override def start(jobRegister: aliases.JobRegister[F, G]): F[tofu.concurrent.Daemon0[F]] = {
-    ???
+    val all = jobInputStorage.all.traverse[F, Unit]{ case (id, record) =>
+        val trigger = triggerDecoder.decodeJson(record.trigger)
+                  .toOption.pure[F]
+                  .orThrow(new Exception("Triggee"))
+        
+        
+        val run = for{
+          next <- trigger >>= triggerInterpreter.next
+          now  <- Timer[F].now
+          diff = Date.diff(start = now, end = next)
+          // _    <- 
+          //   if(diff < 1000){ Monad[F].unit
+          //     // for{
+          //     //   // kleisli <- 
+          //     //   // _       <- kleisli(record.input).lift
+          //     // } yield ()
+          //   } else {
+          //     Monad[F].unit
+          //   }
+        } yield ()
+
+        val next = trigger.map(triggerInterpreter.next)
+        // triggerInterpreter.next()
+        val now = Timer[F].now
+        
+    //   }
+    // ???
   }
 }
 
@@ -83,10 +129,6 @@ final class SimpleTriggersWatchmen[
 //         _     <- F.deleteF[F, TriggerId, JobId](triggerId)
 //       } yield ()
 //     }
-//   }
-
-//   def diff(start: LocalDateTime, end: LocalDateTime): Long = {
-//     end.toInstant(ZoneOffset.UTC).toEpochMilli - start.toInstant(ZoneOffset.UTC).toEpochMilli()
 //   }
 
 //   def start: F[tofu.concurrent.Daemon0[F]] = {

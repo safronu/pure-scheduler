@@ -8,6 +8,7 @@ val V = new {
   val catsEffects    = "2.1.3"
   val contextApplied = "0.1.3"
   val simulacrum     = "1.0.0"
+  val circe          = "0.12.3"
 }
 
 val Deps = new {
@@ -16,14 +17,22 @@ val Deps = new {
   val cats        = List("org.typelevel" %% "cats-core" % V.cats)
   val catsEffects = List("org.typelevel" %% "cats-effect" % V.catsEffects)
   val cron4s      = List("com.github.alonsodomin.cron4s" %% "cron4s-core" % V.cron4s)
-  val refined = List(
+  val refined     = List(
     "eu.timepit" %% "refined" % V.refined,
     "eu.timepit" %% "refined-cats" % V.refined, // optional
   )
-  val tofu           = List("ru.tinkoff" %% "tofu" % V.tofu)
+  val tofu        = List(
+    "ru.tinkoff" %% "tofu" % V.tofu,
+    "ru.tinkoff" %% "tofu-logging" % V.tofu  
+  )
   val simulacrum     = List("org.typelevel" %% "simulacrum" % V.simulacrum)
   val kindProjector  = "org.typelevel" %% "kind-projector" % V.kindProjector cross CrossVersion.full
   val contextApplied = "org.augustjune" %% "context-applied" % V.contextApplied
+  val circe = List(
+    "io.circe" %% "circe-core",
+    "io.circe" %% "circe-generic",
+    "io.circe" %% "circe-parser"
+  ).map(_ % V.circe)
 }
 
 lazy val scheduler4s = (project in file("."))
@@ -41,6 +50,7 @@ lazy val scheduler4s = (project in file("."))
     ++ Deps.tofu
     ++ Deps.refined
     ++ Deps.simulacrum
+    ++ Deps.circe
     ++ Deps.catsEffects,
     addCompilerPlugin(Deps.kindProjector),
     addCompilerPlugin(Deps.contextApplied)
